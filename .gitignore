@@ -1,0 +1,4 @@
+raw/
+*.vscode/
+*.idea/
+cmake-build-*/

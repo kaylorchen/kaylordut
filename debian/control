@@ -1,0 +1,11 @@
+Source: kaylordut-dev
+Section: misc
+Priority: optional
+Maintainer: Kaylor Chen <kaylor.chen@qq.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper (>= 7.0.0~)
+
+Package: kaylordut-dev
+Architecture: any
+Description: Some commonly used C++ methods
+

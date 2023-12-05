@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(kaylordut)
-#add_subdirectory(time)
-#file(GLOB_RECURSE VAR *.h)
-#install(FILES ${VAR} DESTINATION include/kaylordut)
-install(DIRECTORY time
-        DESTINATION include/kaylordut
-        FILES_MATCHING
-        PATTERN "*.h"
-        PATTERN "*.hpp")
+
+include_directories(../)
+
+add_subdirectory(time)
+
+add_executable(${PROJECT_NAME}_timeout_example example/timeout_example.cpp)
+install(TARGETS ${PROJECT_NAME}_timeout_example
+        DESTINATION bin)

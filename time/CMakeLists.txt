@@ -1,3 +1,6 @@
-file(GLOB hs *.h)
-file(GLOB hpps *.hpp)
-install(FILES ${hs} DESTINATION include)
+
+install(DIRECTORY ./
+        DESTINATION include/kaylordut
+        FILES_MATCHING
+        PATTERN "*.h"
+        PATTERN "*.hpp")

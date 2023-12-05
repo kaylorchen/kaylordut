@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -rf raw/
-dpkg-deb -R simple-deb*.deb raw
+dpkg-deb -R *.deb raw
 tree raw

@@ -2,3 +2,5 @@ raw/
 *.vscode/
 *.idea/
 cmake-build-*/
+build/
+*.deb

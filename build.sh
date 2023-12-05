@@ -1,7 +1,8 @@
 #!/bin/bash
-version=$(shell git describe --tags)
-commit_msg=$(shell git log -n 1 --pretty=format:'%s')
-dch --create --package=ros-noetic-telecontrol -v ${version} ${commit_msg}
+version=$(git describe --tags)
+commit_msg=$(git log -n 1 --pretty=format:'%s')
+echo version is $version, and commit_msg is $commit_msg
+dch --create --package=kaylordut-dev -v ${version} ${commit_msg}
 rm *.deb
 fakeroot debian/rules binary
 fakeroot debian/rules clean

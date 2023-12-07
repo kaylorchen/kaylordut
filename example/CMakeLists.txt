@@ -5,3 +5,7 @@ install(TARGETS ${PROJECT_NAME}_timeout_example
 add_executable(${PROJECT_NAME}_private_timer_example private_timer_example.cpp)
 install(TARGETS ${PROJECT_NAME}_private_timer_example
         DESTINATION bin)
+
+add_executable(${PROJECT_NAME}_time_duration_example time_duration_example.cpp)
+install(TARGETS ${PROJECT_NAME}_time_duration_example
+        DESTINATION bin)

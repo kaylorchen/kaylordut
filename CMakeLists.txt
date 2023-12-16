@@ -3,6 +3,8 @@ project(kaylordut)
 
 include_directories(../)
 
+add_subdirectory(log)
+
 add_subdirectory(time)
 
 add_subdirectory(example)

@@ -7,6 +7,7 @@
 #include "map"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/systemd_sink.h"
 #include "iostream"
 
 namespace common {
@@ -20,8 +21,17 @@ class Logger {
 
   Logger(std::string &&logger_name) {
     try {
-      auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-      logger_ = std::make_shared<spdlog::logger>(logger_name, console_sink);
+      std::vector<spdlog::sink_ptr> sinks;
+      if (IsEnableStdOut()){
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        sinks.emplace_back(console_sink);
+      }
+      if (IsEnableSystemd()){
+        auto systemd_sink = std::make_shared<spdlog::sinks::systemd_sink_mt>();
+        sinks.emplace_back(systemd_sink);
+      }
+
+      logger_ = std::make_shared<spdlog::logger>(logger_name, sinks.begin(), sinks.end());
       logger_->set_level(ReadLogLevelFromEnv());
       logger_->set_pattern("%v");
     }
@@ -55,6 +65,45 @@ class Logger {
       return spdlog::level::info;
     }
   }
+  /**
+   * 通过环境变量使能stdout输出
+   * @return 默认返回true
+   */
+  bool IsEnableStdOut() {
+    const char *value = std::getenv("SPDLOG_STDOUT");
+    if (value != nullptr) {
+      std::string var = std::string(value);
+      if (var == "true") { return true; }
+      else if (var == "false") { return false; }
+      else {
+        std::cout << "environment variable SPDLOG_STDOUT is invalid, and set true\n";
+        return true;
+      }
+    }
+    std::cout << "environment variable SPDLOG_STDOUT is not set, and set true\n";
+    return true;
+  }
+
+
+  /**
+   * 通过环境变量使能systemd的输出
+   * @return 默认返回false
+   */
+  bool IsEnableSystemd() {
+    const char *value = std::getenv("SPDLOG_SYSTEMD");
+    if (value != nullptr) {
+      std::string var = std::string(value);
+      if (var == "true") { return true; }
+      else if (var == "false") { return false; }
+      else {
+        std::cout << "environment variable SPDLOG_SYSTEMD is invalid, and set false\n";
+        return false;
+      }
+    }
+    std::cout << "environment variable SPDLOG_SYSTEMD is not set, and set false\n";
+    return false;
+  }
+
   std::shared_ptr<spdlog::logger> logger_;
 };
 }  // namespace common

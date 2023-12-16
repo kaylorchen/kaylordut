@@ -121,7 +121,14 @@ class Logger {
 
 #define KAYLORDUT_LOG_DEBUG(...) \
     { SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(), spdlog::level::debug, fmt::format(__VA_ARGS__) + DEBUG_FORMAT); }
-
+#define KAYLORDUT_LOG_DEBUG_ONCE(...) \
+    do{                               \
+       static bool once =true;        \
+       if(once){                      \
+          once = false;               \
+          KAYLORDUT_LOG_DEBUG(__VA_ARGS__)\
+       }\
+    }while(0)
 #define KAYLORDUT_LOG_INFO(...) \
     { SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(), spdlog::level::info, fmt::format(__VA_ARGS__) + INFO_FORMAT); }
 

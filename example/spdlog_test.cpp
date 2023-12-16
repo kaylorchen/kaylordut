@@ -18,5 +18,11 @@ int main(int argc, char **argv){
   KAYLORDUT_LOG_ERROR("a = {}", a++);
   KAYLORDUT_LOG_CRITICAL("a = {}", a++);
   std::thread(foo).join();
+  int count = 5;
+  do{
+    KAYLORDUT_LOG_DEBUG_ONCE("once");
+    KAYLORDUT_LOG_DEBUG("normal")
+  }
+  while(count--);
   return 0;
 }

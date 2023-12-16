@@ -11,7 +11,7 @@
 #include "spdlog/sinks/systemd_sink.h"
 #include "spdlog/spdlog.h"
 
-namespace common {
+namespace kaylordut {
 
 class Logger {
  public:
@@ -118,7 +118,7 @@ class Logger {
 
   std::shared_ptr<spdlog::logger> logger_;
 };
-}  // namespace common
+}  // namespace kaylordut
 
 #define SUFFIX_FORMAT fmt::format("{}() at {}:{}", __func__, __FILE__, __LINE__)
 #define DEBUG_FORMAT (fmt::format(" | [DEBUG] ") + SUFFIX_FORMAT)
@@ -130,7 +130,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_TRACE(...)                                 \
   {                                                              \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),   \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),   \
                        spdlog::level::trace,                     \
                        fmt::format(__VA_ARGS__) + TRACE_FORMAT); \
   }
@@ -159,7 +159,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_DEBUG(...)                                 \
   {                                                              \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),   \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),   \
                        spdlog::level::debug,                     \
                        fmt::format(__VA_ARGS__) + DEBUG_FORMAT); \
   }
@@ -188,7 +188,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_INFO(...)                                 \
   {                                                             \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),  \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),  \
                        spdlog::level::info,                     \
                        fmt::format(__VA_ARGS__) + INFO_FORMAT); \
   }
@@ -217,7 +217,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_WARN(...)                                 \
   {                                                             \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),  \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),  \
                        spdlog::level::warn,                     \
                        fmt::format(__VA_ARGS__) + WARN_FORMAT); \
   }
@@ -246,7 +246,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_ERROR(...)                                 \
   {                                                              \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),   \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),   \
                        spdlog::level::err,                       \
                        fmt::format(__VA_ARGS__) + ERROR_FORMAT); \
   }
@@ -275,7 +275,7 @@ class Logger {
 
 #define KAYLORDUT_LOG_CRITICAL(...)                                 \
   {                                                                 \
-    SPDLOG_LOGGER_CALL(common::Logger::Instance().GetLogger(),      \
+    SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),      \
                        spdlog::level::critical,                     \
                        fmt::format(__VA_ARGS__) + CRITICAL_FORMAT); \
   }

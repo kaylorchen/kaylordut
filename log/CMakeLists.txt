@@ -1,6 +1,6 @@
 
 install(DIRECTORY ./
-        DESTINATION include/kaylordut
+        DESTINATION include/kaylordut/log
         FILES_MATCHING
         PATTERN "*.h"
         PATTERN "*.hpp")

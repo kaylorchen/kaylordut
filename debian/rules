@@ -2,3 +2,11 @@
 
 %:
 	dh $@ --buildsystem=cmake --sourcedirectory=./ --builddirectory=obj
+override_dh_auto_configure:
+ifeq ($(DEB_HOST_ARCH), arm64)
+	dh_auto_configure -- -DCMAKE_TOOLCHAIN_FILE=/opt/kaylor/data/work/rockchip/rk3588_dev_rootfs/toolchain-aarch64.cmake 
+else
+	dh_auto_configure
+endif
+override_dh_shlibdeps:
+

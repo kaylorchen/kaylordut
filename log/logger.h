@@ -262,17 +262,17 @@ class Logger {
     }                                  \
   } while (0)
 
-#define KAYLORDUT_LOG_ERORR_FUNCTION(function, ...) \
+#define KAYLORDUT_LOG_ERROR_FUNCTION(function, ...) \
   do {                                              \
     if ((*function)()) {                            \
-      KAYLORDUT_LOG_ERORR(__VA_ARGS__)              \
+      KAYLORDUT_LOG_ERROR(__VA_ARGS__)              \
     }                                               \
   } while (0)
 
-#define KAYLORDUT_LOG_ERORR_EXPRESSION(expression, ...) \
+#define KAYLORDUT_LOG_ERROR_EXPRESSION(expression, ...) \
   do {                                                  \
     if (expression) {                                   \
-      KAYLORDUT_LOG_ERORR(__VA_ARGS__)                  \
+      KAYLORDUT_LOG_ERROR(__VA_ARGS__)                  \
     }                                                   \
   } while (0)
 

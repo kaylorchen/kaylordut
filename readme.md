@@ -7,3 +7,4 @@ cmake ..
 make 
 sudo make install
 ```
+DEB_BUILD_OPTIONS=arch=arm64 dpkg-buildpackage -j -aarm64 -us -uc

@@ -3,10 +3,11 @@ Section: misc
 Priority: optional
 Maintainer: Kaylor Chen <kaylor.chen@qq.com>
 Rules-Requires-Root: no
-Build-Depends: debhelper (>= 7.0.0~)
+Build-Depends: debhelper (>= 7.0.0~), libspdlog-dev, libsystemd-dev
 Vcs-Git: https://github.com/kaylorchen/kaylordut
 
 Package: kaylordut-dev
 Architecture: any
+Depends: ${shlibs:Depends}
 Description: Some commonly used C++ methods
 

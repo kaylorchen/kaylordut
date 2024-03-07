@@ -7,6 +7,6 @@ mv debian/changelog debian/changelog.bak
 dch --create --package=kaylordut-dev -v ${version} ${commit_msg}
 rm *.deb
 fakeroot debian/rules binary
-fakeroot debian/rules clean
 mv debian/changelog.bak debian/changelog
+fakeroot debian/rules clean
 mv ../kaylor*.deb ./

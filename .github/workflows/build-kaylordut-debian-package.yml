@@ -9,42 +9,75 @@ on:
    branches:
    - master
 jobs:
- build:
-   runs-on: ubuntu-22.04
-   strategy:
-     matrix:
-       architecture: [arm64, amd64]
-   steps:
-   - name: Checkout Source Code
-     uses: actions/checkout@v3
-     with:
-       fetch-depth: 0
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        architecture: [arm64, amd64]
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-   - name: build package
-     run: |
-       sudo apt update 
-       sudo apt install -y --no-install-recommends devscripts
-       ls -al
-       set -xe
-       export EMAIL=kaylor.chen@qq.com
-       version=$(git describe --tags)
-       commit_msg=$(git log -n 1 --pretty=format:'%s')
-       echo version is $version, and commit_msg is $commit_msg
-       mv debian/changelog debian/changelog.bak
-       dch --create --package=kaylordut-dev -v ${version} ${commit_msg}
-       echo Architecture is ${{ matrix.architecture}}
-       if [ ${{ matrix.architecture}} == arm64 ]; then
+    - name: build package
+      run: |
+        sudo apt update 
+        sudo apt install -y --no-install-recommends devscripts
+        ls -al
+        set -xe
+        export EMAIL=kaylor.chen@qq.com
+        version=$(git describe --tags)
+        commit_msg=$(git log -n 1 --pretty=format:'%s')
+        echo version is $version, and commit_msg is $commit_msg
+        mv debian/changelog debian/changelog.bak
+        dch --create --package=kaylordut-dev -v ${version} ${commit_msg}
+        echo Architecture is ${{ matrix.architecture}}
+        if [ ${{ matrix.architecture}} == arm64 ]; then
           docker run --privileged --rm tonistiigi/binfmt --install all
-       fi
-       docker pull --platform=${{matrix.architecture}} kaylor/base-compile:latest
-       docker run --rm -v ${PWD}:/root/kaylordut kaylor/base-compile:latest sh -c "git config --global --add safe.directory /root/kaylordut && cd /root/kaylordut && yes | mk-build-deps --install --remove debian/control && fakeroot debian/rules binary && mv -v ../kaylor*.deb ./ "
-       ls -al
-       rm -rf ./artifact
-       mkdir -p ./artifact
-       cp kaylordut*${{matrix.architecture}}.deb ./artifact/kaylordut-dev_${{matrix.architecture}}.deb
+        fi
+        docker pull --platform=${{matrix.architecture}} kaylor/base-compile:latest
+        docker run --rm -v ${PWD}:/root/kaylordut kaylor/base-compile:latest sh -c "git config --global --add safe.directory /root/kaylordut && cd /root/kaylordut && yes | mk-build-deps --install --remove debian/control && fakeroot debian/rules binary && mv -v ../kaylor*.deb ./ "
+        ls -al
+        rm -rf ./artifact
+        mkdir -p ./artifact
+        cp kaylordut*${{matrix.architecture}}.deb ./artifact/kaylordut-dev_${{matrix.architecture}}.deb
 
-   - name: Upload artifact
-     uses: actions/upload-artifact@v3
-     with:
-       name: kaylordut-${{ matrix.architecture }}
-       path: ./artifact/
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: kaylordut-${{ matrix.architecture }}
+        path: ./artifact/
+        
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: kaylordut-${{ needs.build.outputs.architecture }}
+
+      - name: sync files
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr
+          path: ./artifact/
+          remote_path: ~/kaylordut/
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_key: ${{ secrets.SSH_KEY }}
+          remote_port: ${{ secrets.PORT }}
+
+      - name: Aptly release
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            aptly repo --force-replace add kaylordut ~/kaylordut/
+            aptly publish update  --force-overwrite  -batch -passphrase="${{ secrets.GPG_PASSPHRASE}}" kaylordut kaylordut

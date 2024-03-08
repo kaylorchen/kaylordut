@@ -46,25 +46,24 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: kaylordut-${{ matrix.architecture }}
+        name: kaylordut
         path: ./artifact/
         
   deploy:
     runs-on: ubuntu-22.04
     needs: build
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: kaylordut-${{ needs.build.outputs.architecture }}
+          name: kaylordut
 
       - name: sync files
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr
-          path: ./artifact/
+          path: ./kaylordut/
           remote_path: ~/kaylordut/
           remote_host: ${{ secrets.HOST }}
           remote_user: ${{ secrets.USERNAME }}

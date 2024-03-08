@@ -31,3 +31,28 @@ exit
 sudo apt install ./kaylordut-dev_*.deb
 ```
 > you can copy the debian package to your target host and installl it
+
+# Example
+- Edit test.cpp and CMakeLists.txt
+```c++
+#include "kaylordut/log/logger.h"
+int main() {
+  KAYLORDUT_LOG_ERROR("this is a test");
+  return 0;
+}
+```
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(logtest)
+find_package(kaylordut REQUIRED)
+add_executable(logtest main.cpp)
+target_link_libraries(logtest ${kaylordut_LIBS})
+```
+- Build and run
+```bash
+mkdir build
+cd build
+cmake ..
+make 
+./logtest 
+```

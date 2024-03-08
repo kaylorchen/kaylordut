@@ -1,5 +1,6 @@
 # Install kaylordut library from source repository
 ```bash
+sudo apt install libspdlog-dev libsystemd-dev -y
 git clone https://github.com/kaylorchen/kaylordut.git
 mkdir -p kaylordut/build
 cd kaylordut/build

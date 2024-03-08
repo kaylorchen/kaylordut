@@ -46,27 +46,5 @@ jobs:
    - name: Upload artifact
      uses: actions/upload-artifact@v3
      with:
-       name: kaylordut
+       name: kaylordut-${{ matrix.architecture }}
        path: ./artifact/
-
-   - name: sync files
-     uses: burnett01/rsync-deployments@6.0.0
-     with:
-        switches: -avzr
-        path: ./artifact/
-        remote_path: ~/kaylordut/
-        remote_host: ${{ secrets.HOST }}
-        remote_user: ${{ secrets.USERNAME }}
-        remote_key: ${{ secrets.SSH_KEY }}
-        remote_port: ${{ secrets.PORT }}
-
-   - name: Aptly release
-     uses: appleboy/ssh-action@v1.0.0
-     with:
-      host: ${{ secrets.HOST }}
-      username: ${{ secrets.USERNAME }}
-      key: ${{ secrets.SSH_KEY }}
-      port: ${{ secrets.PORT }}
-      script: |
-        aptly repo add kaylordut ~/kaylordut/
-        aptly publish update  --force-overwrite  -batch -passphrase="${{ secrets.GPG_PASSPHRASE}}" kaylordut kaylordut

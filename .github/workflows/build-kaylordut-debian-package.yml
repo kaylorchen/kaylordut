@@ -41,7 +41,7 @@ jobs:
         ls -al
         rm -rf ./artifact
         mkdir -p ./artifact
-        cp kaylordut*${{matrix.architecture}}.deb ./artifact/kaylordut-dev_${{matrix.architecture}}.deb
+        cp kaylordut*${{matrix.architecture}}.deb ./artifact/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3

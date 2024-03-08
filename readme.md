@@ -1,4 +1,5 @@
-# Install kaylordut library from source repository
+# Install 
+## Install kaylordut library from source repository
 ```bash
 sudo apt install libspdlog-dev libsystemd-dev -y
 git clone https://github.com/kaylorchen/kaylordut.git
@@ -10,7 +11,7 @@ sudo make install
 ```
 <!-- DEB_BUILD_OPTIONS=arch=arm64 dpkg-buildpackage -j -aarm64 -us -uc -->
 
-# Create a debian package from source repository
+## Create a debian package from source repository
 - clone source repository and run docker
 ```bash
 git clone https://github.com/kaylorchen/kaylordut.git

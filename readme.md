@@ -1,4 +1,5 @@
 # Install 
+There are three installation methods:
 ## Install kaylordut library from source repository
 ```bash
 sudo apt install libspdlog-dev libsystemd-dev -y
@@ -33,6 +34,16 @@ exit
 sudo apt install ./kaylordut-dev_*.deb
 ```
 > you can copy the debian package to your target host and installl it
+
+## Install via apt
+```shell
+cat << 'EOF' | sudo tee /etc/apt/sources.list.d/kaylordut.list 
+deb [signed-by=/etc/apt/keyrings/kaylor-keyring.gpg] http://apt.kaylordut.cn/kaylordut/ kaylordut main
+EOF
+sudo wget -O /etc/apt/keyrings/kaylor-keyring.gpg http://apt.kaylordut.cn/kaylor-keyring.gpg
+sudo apt update
+sudo apt install kaylordut-dev
+```
 
 # Example
 - Edit test.cpp and CMakeLists.txt

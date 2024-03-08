@@ -56,8 +56,6 @@ jobs:
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
-        with:
-          name: kaylordut
 
       - name: sync files
         uses: burnett01/rsync-deployments@6.0.0

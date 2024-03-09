@@ -17,5 +17,6 @@ int main(void){
   private_timer.start(std::chrono::milliseconds(1000), callback);
   std::this_thread::sleep_for(std::chrono::seconds(5));
   private_timer.stop();
+  std::this_thread::sleep_for(std::chrono::seconds(1));
   return 0;
 }

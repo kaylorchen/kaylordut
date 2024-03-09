@@ -8,6 +8,6 @@ Vcs-Git: https://github.com/kaylorchen/kaylordut
 
 Package: kaylordut-dev
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends},${misc:Depends}, libspdlog-dev, libsystemd-dev, libfmt-dev
 Description: Some commonly used C++ methods
 

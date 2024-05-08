@@ -6,7 +6,9 @@
 
 class PrivateTimer {
  public:
-  PrivateTimer() { std::cout << "PrivateTimer constructor is called\n"; }
+  PrivateTimer() : m_isRunning(false) {
+    std::cout << "PrivateTimer constructor is called\n";
+  }
   ~PrivateTimer() { std::cout << "PrivateTimer destructor is called\n"; }
   template <typename T>
   void start(const std::chrono::nanoseconds &interval, T callback) {
@@ -31,5 +33,5 @@ class PrivateTimer {
   void stop() { m_isRunning = false; }
 
  private:
-  bool m_isRunning = false;
+  bool m_isRunning;
 };

@@ -5,6 +5,9 @@
 #pragma once
 #include <fmt/format.h>
 
+#include <chrono>
+#include <string>
+
 #include "iostream"
 #include "map"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -303,4 +306,28 @@ class Logger {
     if (expression) {                                      \
       KAYLORDUT_LOG_CRITICAL(__VA_ARGS__)                  \
     }                                                      \
+  } while (0)
+
+#define KAYLORDUT_TIME_COST_INFO(description, codeBlock)                   \
+  do {                                                                     \
+    auto start = std::chrono::high_resolution_clock::now();                \
+    codeBlock;                                                             \
+    auto end = std::chrono::high_resolution_clock::now();                  \
+    auto duration =                                                        \
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start) \
+            .count() /                                                     \
+        1000.0f;                                                           \
+    KAYLORDUT_LOG_INFO("{} cost time: {}ms", (description), (duration));   \
+  } while (0)
+
+#define KAYLORDUT_TIME_COST_DEBUG(description, codeBlock)                  \
+  do {                                                                     \
+    auto start = std::chrono::high_resolution_clock::now();                \
+    codeBlock;                                                             \
+    auto end = std::chrono::high_resolution_clock::now();                  \
+    auto duration =                                                        \
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start) \
+            .count() /                                                     \
+        1000.0f;                                                           \
+    KAYLORDUT_LOG_DEBUG("{} cost time: {}ms", (description), (duration));  \
   } while (0)

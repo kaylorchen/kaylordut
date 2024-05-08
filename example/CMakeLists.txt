@@ -20,3 +20,6 @@ add_executable(${PROJECT_NAME}_spdlog_example spdlog_test.cpp)
 target_link_libraries(${PROJECT_NAME}_spdlog_example spdlog::spdlog systemd)
 install(TARGETS ${PROJECT_NAME}_spdlog_example
         DESTINATION bin)
+
+add_executable(${PROJECT_NAME}_time_cost time_cost.cpp)
+target_link_libraries(${PROJECT_NAME}_time_cost spdlog::spdlog systemd)

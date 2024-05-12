@@ -17,7 +17,9 @@ project(kaylordut VERSION ${VERSION})
 
 find_package(spdlog REQUIRED)
 list(APPEND LINK_LIBS spdlog::spdlog)
-list(APPEND LINK_LIBS systemd)
+if (UNIX AND NOT APPLE)
+    list(APPEND LINK_LIBS systemd)
+endif()
 message(STATUS, "LINK_LIBS is ${LINK_LIBS}")
 
 # Make sure that users can find the header files once installed

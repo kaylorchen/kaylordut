@@ -16,10 +16,17 @@ install(TARGETS ${PROJECT_NAME}_run_once_example
 
 #add_definitions(-DSUFFIX_FORMAT_DISABLE)
 find_package(spdlog REQUIRED)
+set(CUSTOM_LIBS spdlog::spdlog)
+if (UNIX AND NOT APPLE)
+    list(APPEND CUSTOM_LIBS systemd)
+endif ()
+
+
+
 add_executable(${PROJECT_NAME}_spdlog_example spdlog_test.cpp)
-target_link_libraries(${PROJECT_NAME}_spdlog_example spdlog::spdlog systemd)
+target_link_libraries(${PROJECT_NAME}_spdlog_example ${CUSTOM_LIBS})
 install(TARGETS ${PROJECT_NAME}_spdlog_example
         DESTINATION bin)
 
 add_executable(${PROJECT_NAME}_time_cost time_cost.cpp)
-target_link_libraries(${PROJECT_NAME}_time_cost spdlog::spdlog systemd)
+target_link_libraries(${PROJECT_NAME}_time_cost ${CUSTOM_LIBS})

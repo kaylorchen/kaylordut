@@ -11,7 +11,9 @@
 #include "iostream"
 #include "map"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#ifndef __APPLE__
 #include "spdlog/sinks/systemd_sink.h"
+#endif
 #include "spdlog/spdlog.h"
 
 namespace kaylordut {
@@ -31,10 +33,12 @@ class Logger {
             std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
         sinks.emplace_back(console_sink);
       }
+#ifndef __APPLE__
       if (IsEnableSystemd()) {
         auto systemd_sink = std::make_shared<spdlog::sinks::systemd_sink_mt>();
         sinks.emplace_back(systemd_sink);
       }
+#endif
 
       logger_ = std::make_shared<spdlog::logger>(logger_name, sinks.begin(),
                                                  sinks.end());

@@ -1,4 +1,4 @@
-Source: kaylordut-dev
+Source: kaylordut
 Section: misc
 Priority: optional
 Maintainer: Kaylor Chen <kaylor.chen@qq.com>
@@ -9,5 +9,10 @@ Vcs-Git: https://github.com/kaylorchen/kaylordut
 Package: kaylordut-dev
 Architecture: any
 Depends: ${shlibs:Depends},${misc:Depends}, libspdlog-dev, libsystemd-dev, libfmt-dev
-Description: Some commonly used C++ methods
+Description: Development headers and other necessary files for kayordut.
+
+Package: kaylordut
+Architecture: any
+Depends: ${shlibs:Depends},${misc:Depends}, libspdlog-dev, libsystemd-dev, libfmt-dev
+Description: kaylordut examples
 

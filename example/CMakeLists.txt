@@ -30,3 +30,8 @@ install(TARGETS ${PROJECT_NAME}_spdlog_example
 
 add_executable(${PROJECT_NAME}_time_cost time_cost.cpp)
 target_link_libraries(${PROJECT_NAME}_time_cost ${CUSTOM_LIBS})
+
+add_executable(${PROJECT_NAME}_time_point time_point.cpp)
+target_link_libraries(${PROJECT_NAME}_time_point ${CUSTOM_LIBS})
+
+add_executable(${PROJECT_NAME}_condition_var condition_var.cpp)

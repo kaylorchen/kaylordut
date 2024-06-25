@@ -1,3 +1,5 @@
+include_directories(../)
+
 add_executable(${PROJECT_NAME}_timeout_example timeout_example.cpp)
 install(TARGETS ${PROJECT_NAME}_timeout_example
         DESTINATION bin)
@@ -35,3 +37,6 @@ add_executable(${PROJECT_NAME}_time_point time_point.cpp)
 target_link_libraries(${PROJECT_NAME}_time_point ${CUSTOM_LIBS})
 
 add_executable(${PROJECT_NAME}_condition_var condition_var.cpp)
+
+add_executable(${PROJECT_NAME}_time_example time_example.cpp)
+target_link_libraries(${PROJECT_NAME}_time_example ${CUSTOM_LIBS})

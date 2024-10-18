@@ -46,7 +46,3 @@ class TerminateSignal {
       {SIGTERM, "Termination request"}
   };
 };
-
-auto &terminate_signal = TerminateSignal::getInstance();
-
-#define GLOBAL_SIGNAL_STOP (terminate_signal.isTerminated())

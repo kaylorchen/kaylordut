@@ -41,5 +41,4 @@ add_executable(${PROJECT_NAME}_condition_var condition_var.cpp)
 add_executable(${PROJECT_NAME}_time_example time_example.cpp)
 target_link_libraries(${PROJECT_NAME}_time_example ${CUSTOM_LIBS})
 
-add_executable(${PROJECT_NAME}_stop_flag stop_flag.cpp)
-target_link_libraries(${PROJECT_NAME}_stop_flag ${CUSTOM_LIBS})
+add_subdirectory(TerminateSignal)

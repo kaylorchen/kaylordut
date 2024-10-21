@@ -335,3 +335,11 @@ class Logger {
         1000.0f;                                                           \
     KAYLORDUT_LOG_DEBUG("{} cost time: {}ms", (description), (duration));  \
   } while (0)
+
+#define KAYLORDUT_ERROR_CODE(err_code, ...)                            \
+  {                                                                    \
+    SPDLOG_LOGGER_CALL(                                                \
+        kaylordut::Logger::Instance().GetLogger(), spdlog::level::err, \
+        ERROR_FORMAT + fmt::format("<ERROR_CODE: {}> ", (err_code)) +  \
+            fmt::format(__VA_ARGS__));                                 \
+  }

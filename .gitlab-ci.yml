@@ -1,0 +1,22 @@
+include:
+  - local: ".gitlab-ci/packaging-deb.yml" 
+    inputs:
+      image: "jialin_base"
+      arch: "amd64"
+      dist: "jammy"
+      prepare: ".gitlab-ci/prepare.sh"
+  
+  - local: ".gitlab-ci/packaging-deb.yml" 
+    inputs:
+      image: "jialin_base"
+      arch: "arm64"
+      dist: "jammy"
+      prepare: ".gitlab-ci/prepare.sh"
+
+  - project: amr/pipeline
+    ref: "master"
+    file: "distribute.yml"
+
+stages:
+  - packaging
+  - distribute

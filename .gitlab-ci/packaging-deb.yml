@@ -1,0 +1,68 @@
+spec:
+  inputs:
+    dist:
+      default: "jammy"
+    arch:
+      default: "amd64"
+    image:
+      default: "jialin_ros2"
+    packages:
+      default: ".gitlab-ci/packages.list"
+    prepare:
+      default: ":"
+    pull_policy:
+      default: "if-not-present"
+---
+"packaging-deb:$[[ inputs.dist ]]:$[[ inputs.arch ]]":
+  variables:
+    EMAIL: kaylor.chen@qq.com
+    DIST: $[[ inputs.dist ]]
+    GIT_DEPTH: 1000
+    ARCH: $[[ inputs.arch ]]
+  image: 
+    name: $[[ inputs.image ]]
+    pull_policy: $[[ inputs.pull_policy ]]
+  stage: packaging
+  dependencies: [] # Prevent the job from fetching artifacts
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH != "release" && $CI_PIPELINE_SOURCE == "push"'
+      when: manual
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "release"
+  tags:
+    - docker-${ARCH}
+  artifacts:
+    paths:
+      - .gitlab-ci/artifacts
+    expire_in: 1 week
+  script:
+    - set -xe
+    - SOURCE_ROOT=$(pwd)
+    - VERSION=$(git describe --tags).${CI_COMMIT_REF_NAME}.$(TZ="Asia/Shanghai" date +"%Y%m%d.%H%M%S").${DIST}
+    - VERSION=$(echo ${VERSION} | tr _ -)
+    - mkdir -pv ${SOURCE_ROOT}/.gitlab-ci/artifacts/${CI_COMMIT_SHA}/${CI_COMMIT_BRANCH}/${DIST}
+    - $[[ inputs.prepare ]]
+    - sed -i '/^[[:space:]]*$/d' $[[ inputs.packages ]]
+    - |+
+      while IFS= read -r i || [[ -n "$i" ]]
+      do
+        pushd $i
+          pwd
+          ls -lh
+          dch -b -v ${VERSION} $(git log -n 1 --pretty=format:"%s")
+          if [ -f update.sh ]; then
+            bash update.sh
+          else
+            echo "update.sh: no such file"
+          fi
+          fakeroot debian/rules binary
+          set +e
+          cp -vf ../*.deb ${SOURCE_ROOT}/.gitlab-ci/artifacts/${CI_COMMIT_SHA}/${CI_COMMIT_BRANCH}/${DIST}
+          cp -vf ../*.ddeb ${SOURCE_ROOT}/.gitlab-ci/artifacts/${CI_COMMIT_SHA}/${CI_COMMIT_BRANCH}/${DIST}/
+          set -e
+          apt install -y --no-install-recommends ../*.deb
+          apt install -y --no-install-recommends ../*.ddeb
+        popd
+      done < $[[ inputs.packages ]]
+
+

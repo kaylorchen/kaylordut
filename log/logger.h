@@ -126,6 +126,36 @@ class Logger {
   std::shared_ptr<spdlog::logger> logger_;
 };
 }  // namespace kaylordut
+
+namespace kaylordut {
+namespace detail {
+
+/// Convert non-void pointers to const void* for fmt v9+ compatibility.
+/// Other types (including char* strings, void*, int, etc.) pass through unchanged.
+template <typename T>
+decltype(auto) fmtify(T&& arg) noexcept {
+  using decayed = std::decay_t<T>;
+  if constexpr (std::is_pointer_v<decayed> &&
+                !std::is_same_v<decayed, const char*> &&
+                !std::is_same_v<decayed, void*> &&
+                !std::is_same_v<decayed, const void*>) {
+    return static_cast<const void*>(arg);
+  } else {
+    return std::forward<T>(arg);
+  }
+}
+
+/// Drop-in replacement for fmt::format that auto-converts non-void pointers
+/// via fmtify(), so it works with both fmt v8 and fmt v9+.
+template <typename... Args>
+std::string safe_format(fmt::string_view fmt_str, Args&&... args) {
+  return fmt::vformat(
+      fmt_str, fmt::make_format_args(fmtify(std::forward<Args>(args))...));
+}
+
+}  // namespace detail
+}  // namespace kaylordut
+
 #if SUFFIX_FORMAT_DISABLE
 #define SUFFIX_FORMAT fmt::format("")
 #else
@@ -142,7 +172,7 @@ class Logger {
   {                                                               \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(), \
                        spdlog::level::trace,                      \
-                       TRACE_FORMAT + fmt::format(__VA_ARGS__));  \
+                       TRACE_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__));  \
   }
 #define KAYLORDUT_LOG_TRACE_ONCE(...)  \
   do {                                 \
@@ -171,7 +201,7 @@ class Logger {
   {                                                               \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(), \
                        spdlog::level::debug,                      \
-                       DEBUG_FORMAT + fmt::format(__VA_ARGS__));  \
+                       DEBUG_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__));  \
   }
 #define KAYLORDUT_LOG_DEBUG_ONCE(...)  \
   do {                                 \
@@ -200,7 +230,7 @@ class Logger {
   {                                                               \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(), \
                        spdlog::level::info,                       \
-                       INFO_FORMAT + fmt::format(__VA_ARGS__));   \
+                       INFO_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__));   \
   }
 #define KAYLORDUT_LOG_INFO_ONCE(...)  \
   do {                                \
@@ -229,7 +259,7 @@ class Logger {
   {                                                               \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(), \
                        spdlog::level::warn,                       \
-                       WARN_FORMAT + fmt::format(__VA_ARGS__));   \
+                       WARN_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__));   \
   }
 #define KAYLORDUT_LOG_WARN_ONCE(...)  \
   do {                                \
@@ -258,7 +288,7 @@ class Logger {
   {                                                               \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(), \
                        spdlog::level::err,                        \
-                       ERROR_FORMAT + fmt::format(__VA_ARGS__));  \
+                       ERROR_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__));  \
   }
 #define KAYLORDUT_LOG_ERROR_ONCE(...)  \
   do {                                 \
@@ -287,7 +317,7 @@ class Logger {
   {                                                                 \
     SPDLOG_LOGGER_CALL(kaylordut::Logger::Instance().GetLogger(),   \
                        spdlog::level::critical,                     \
-                       CRITICAL_FORMAT + fmt::format(__VA_ARGS__)); \
+                       CRITICAL_FORMAT + kaylordut::detail::safe_format(__VA_ARGS__)); \
   }
 #define KAYLORDUT_LOG_CRITICAL_ONCE(...)  \
   do {                                    \
@@ -341,5 +371,5 @@ class Logger {
     SPDLOG_LOGGER_CALL(                                                \
         kaylordut::Logger::Instance().GetLogger(), spdlog::level::err, \
         ERROR_FORMAT + fmt::format("<ERROR_CODE: {}> ", (err_code)) +  \
-            fmt::format(__VA_ARGS__));                                 \
+            kaylordut::detail::safe_format(__VA_ARGS__));                                 \
   }

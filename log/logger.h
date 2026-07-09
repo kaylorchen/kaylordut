@@ -130,16 +130,27 @@ class Logger {
 namespace kaylordut {
 namespace detail {
 
-/// Convert non-void pointers to const void* for fmt v9+ compatibility.
-/// Other types (including char* strings, void*, int, etc.) pass through unchanged.
+/// Convert non-void pointers for fmt v9+ compatibility:
+///   - char* / const char* / void* / const void* → pass through unchanged
+///   - unsigned char* / signed char* → reinterpret as const char* (C string)
+///   - all other pointers → cast to const void* (print as hex address)
 template <typename T>
 decltype(auto) fmtify(T&& arg) noexcept {
   using decayed = std::decay_t<T>;
   if constexpr (std::is_pointer_v<decayed> &&
                 !std::is_same_v<decayed, const char*> &&
+                !std::is_same_v<decayed, char*> &&
                 !std::is_same_v<decayed, void*> &&
                 !std::is_same_v<decayed, const void*>) {
-    return static_cast<const void*>(arg);
+    // unsigned char* / signed char* are commonly used for C strings
+    if constexpr (std::is_same_v<decayed, unsigned char*> ||
+                  std::is_same_v<decayed, const unsigned char*> ||
+                  std::is_same_v<decayed, signed char*> ||
+                  std::is_same_v<decayed, const signed char*>) {
+      return reinterpret_cast<const char*>(arg);
+    } else {
+      return static_cast<const void*>(arg);
+    }
   } else {
     return std::forward<T>(arg);
   }

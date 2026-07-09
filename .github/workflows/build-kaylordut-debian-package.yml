@@ -37,7 +37,7 @@ jobs:
           docker run --privileged --rm tonistiigi/binfmt --install all
         fi
         docker pull --platform=${{matrix.architecture}} kaylor/base-compile:latest
-        docker run --rm -v ${PWD}:/root/kaylordut kaylor/base-compile:latest sh -c "git config --global --add safe.directory /root/kaylordut && cd /root/kaylordut && yes | mk-build-deps --install --remove debian/control && fakeroot debian/rules binary && mv -v ../kaylor*.deb ./ "
+        docker run --rm -v ${PWD}:/root/kaylordut kaylor/base-compile:latest sh -c "apt update && git config --global --add safe.directory /root/kaylordut && cd /root/kaylordut && yes | mk-build-deps --install --remove debian/control && fakeroot debian/rules binary && mv -v ../kaylor*.deb ./ "
         ls -al
         rm -rf ./artifact
         mkdir -p ./artifact
